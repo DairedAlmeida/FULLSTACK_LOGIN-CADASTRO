@@ -8,18 +8,6 @@ const port = 3000
 app.use(bodyParser.json())
 app.use('/users', users);
 User.sync();
-/**
- * @openapi
- * /:
- *   get:
- *     description: Welcome to swagger-jsdoc!
- *     responses:
- *       200:
- *         description: Returns a mysterious string.
- */
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
 const swaggerJsdoc = require('swagger-jsdoc');
 
 const options = {
@@ -30,7 +18,7 @@ const options = {
       version: '1.0.0',
     },
   },
-  apis: ['./src/routes*.js'], // files containing annotations as above
+  apis: ['./routes/*.js'], // files containing annotations as above
 };
 
 const openapiSpecification = swaggerJsdoc(options);

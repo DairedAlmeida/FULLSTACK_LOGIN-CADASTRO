@@ -1,4 +1,4 @@
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4, validate } = require('uuid');
 const { Sequelize, DataTypes } = require('sequelize');
 const { encriptar, compararSenha} = require('../ultis/util');
 require('dotenv').config()
@@ -24,20 +24,27 @@ const User = sequelize.define('User', {
     email: {
         type: DataTypes.STRING,
         field: "UsEmail",
-        allowNull: false
+        allowNull: false,
+        validate: {
+            customValidator(value) {
+                if (value === null || !String(value).includes('@')) {
+                  throw new Error("name can't be null unless age is 10");
+                }
+            }
+        }
     },
     senha: {
         type: DataTypes.STRING,
         field: "UsSenha",
-        allowNull: false
+        allowNull: false,
     },
     token: {
         type: DataTypes.STRING,
         field: "UsToken",
-        allowNull: true
+        allowNull: true,
     }
 
-}, {tableName: "ususuarios"});
+});
 
 async function cadastroUsuario(name, email, senha) {
     let senhaEncriptada = await encriptar(senha);
