@@ -4,38 +4,20 @@ const { User } = require('./models/user')
 const users = require('./routes/usuarios')
 const app = express()
 const port = 3000
+const YAML = require('yaml')
+const fs = require('fs')
+const file  = fs.readFileSync('./swagger.yaml', 'utf8')
+const swaggerDocument = YAML.parse(file)
+const cors = require('cors')
+
 app.use(bodyParser.json())
+app.use(cors())
 app.use('/users', users);
 User.sync();
-/**
- * @openapi
- * /:
- *   get:
- *     description: Welcome to swagger-jsdoc!
- *     responses:
- *       200:
- *         description: Returns a mysterious string.
- */
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-const swaggerJsdoc = require('swagger-jsdoc');
 
-const options = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'Hello World',
-      version: '1.0.0',
-    },
-  },
-  apis: ['./src/routes*.js'], // files containing annotations as above
-};
-
-const openapiSpecification = swaggerJsdoc(options);
 const swaggerUi = require('swagger-ui-express');
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
